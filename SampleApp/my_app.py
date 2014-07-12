@@ -23,8 +23,8 @@ class MyApp(object):
     def complex(self, a, b, c, x=1, y=2, z=3):
         return "hello ;ol"
 
-    def hey(self, some_string):
+    def heey(self, some_string):
         print "HEY Got called! Woo!"
         return "Hey there %s" % (some_string)
 
-b = BeamLibrary.BeamLib(MyApp)
+b = BeamLibrary.BeamLib(MyApp, '10.16.23.105')

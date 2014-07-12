@@ -2,25 +2,41 @@
 BeamWare Library for the Client Application
 """
 
-import zerorpc
-import json
-import inspect
+from time import sleep
 from types import MethodType
+import inspect
+import json
+import requests
+import socket
+import subprocess
+import threading
+import zerorpc
 
 from rpc import BW_functions, BW_class_name
 
 class BeamLib(object):
 
-    def __init__(self, client_app_class, port = 4242):
+    def __init__(self, client_app_class, node_server_ip= '127.0.0.1', port = 4242):
         #TODO: Add class checking, throw exception otherwise
+        self.port = port
+        self.node_server_ip = node_server_ip
         self.app = client_app_class
         self.app_name = ""
         self.func_json = {}
-
         self._derobe(client_app_class)
+        self.func_json = json.dumps(self.func_json)
         self._init_meta_functions()
         self._init_server(port)
+        self._handshake()
         self._run()
+
+    def _handshake(self):
+        local_ip = self._get_local_ip()
+        tcp = 'tcp://' + local_ip + ':' + str(self.port)
+        http = 'http://' + self.node_server_ip + ':3000/rpc/registration'
+        data = {'name': str(self.app_name), 'url': str(tcp)}
+        headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+        r = requests.post(http, data=json.dumps(data), headers=headers)
 
     def _init_meta_functions(self):
         """
@@ -82,7 +98,13 @@ class BeamLib(object):
                                         }
 
     def _run(self):
+        print "RPC Server Started..."
         self.server.run()
+
+    def _get_local_ip(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(('google.com', 0))
+        return s.getsockname()[0]
 
     def get_source(self, function):
         """
