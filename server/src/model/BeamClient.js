@@ -3,8 +3,8 @@ var Promise = require('bluebird');
 var _ = require('underscore');
 var vm = require('vm');
 
-var FuncNotFound = require('./FuncNotFound');
-var NotConnected = require('./NotConnected');
+var FuncNotFound = require('./../exceptions/FuncNotFound');
+var NotConnected = require('./../exceptions/NotConnected');
 
 function BeamClient(url) {
     var self = this;

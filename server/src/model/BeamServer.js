@@ -1,8 +1,8 @@
 var zerorpc = require('zerorpc');
 var Promise = require('bluebird');
 
-var BeamClient = require('./BeamClient');
-var NotConnected = require('./NotConnected');
+var BeamClient = require('./BeamClient'); 
+var NotConnected = require('./../exceptions/NotConnected');
 
 function BeamServer() {
     this.clients = {};
