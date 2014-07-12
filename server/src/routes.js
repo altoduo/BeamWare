@@ -43,7 +43,7 @@ router.get('/:name', function(req, res) {
     // 404 if the client doesn't exist
     var client = beamServer.clients[name];
     if (client === undefined) {
-        res.send(404).end();
+        throw new ex.FuncNotFoundError();
     }
 
     // send the functions associated with that client
@@ -59,33 +59,13 @@ router.get('/:name/:function', function(req, res) {
     // attempt to get the client
     var client = beamServer.clients[name];
     if (client === undefined) {
-        res.send(404).end();
+        throw new ex.FuncNotFoundError();
     }
 
-    try {
-        client.call(fn, [])
-        .then(function(result) {
-            res.send(200, result);
-        });
-    } catch (e) {
-        console.log(e);
-        res.send(500).end();
-    }
-});
-
-router.get('/test', function(req, res) {
-    var client = beamServer.connect('tcp://10.16.22.181:4242');
-
-    client.call('hello', ['colin'])
-        .then(function(callRes) {
-            console.log('call success!');
-            res.send(200, JSON.stringify(callRes)).end();
-        })
-        .error(function(e) {
-            console.log('there was an error');
-            console.log(e);
-            res.send(500).end();
-        });
+    client.call(fn, [])
+    .then(function(result) {
+        res.send(200, result);
+    });
 });
 
 module.exports = router;
