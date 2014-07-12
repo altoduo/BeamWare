@@ -16,6 +16,29 @@ app.set('util', path.join(__dirname, 'src/util'));
 app.use(bodyParser.json());
 app.use('/', routes);
 
+// development error handler
+// will print stacktrace
+//if (app.get('env') === 'development') {
+if (true) {
+    app.use(function(err, req, res, next) {
+        res.status(err.status || 500);
+        res.render('error', {
+            message: err.message,
+            error: err
+        });
+    });
+}
+
+// production error handler
+// no stacktraces leaked to user
+app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+        message: err.message,
+        error: {}
+    });
+});
+
 // listen on port 3000
 app.listen(3000);
 console.log('Started! Listening on port 3000.');
