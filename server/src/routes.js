@@ -20,13 +20,20 @@ router.post('/rpc/registration', function(req, res) {
     try {
         beamServer.connect(name, url);
     } catch (e) {
-        console.log('Error on connecting to the host');
+        console.log('Error while connecting to the host');
         console.log(e.toString());
         var code = parseInt(e.message);
 
         // throw the error if it isn't a simple status code
         if (typeof code !== 'number' && !isNan(code)) {
             throw e;
+        }
+
+        // send bad gateway if can't connect to client or the '_functions'
+        // doesn't exist
+        if (e.name === 'NotConnected' || e.name === 'FuncNotFound') {
+            res.send(502).end();
+            return;
         }
 
         // send the response
