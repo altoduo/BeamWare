@@ -31,7 +31,7 @@ router.post('/rpc/registration', function(req, res) {
 
         // send bad gateway if can't connect to client or the '_functions'
         // doesn't exist
-        if (e.name === 'NotConnected' || e.name === 'FuncNotFound') {
+        if (e.name === 'NotConnectedError' || e.name === 'FuncNotFoundError') {
             res.send(502).end();
             return;
         }

@@ -3,8 +3,8 @@ var Promise = require('bluebird');
 var _ = require('underscore');
 var vm = require('vm');
 
-var FuncNotFound = require('./../exceptions/FuncNotFound');
-var NotConnected = require('./../exceptions/NotConnected');
+var FuncNotFoundError = require('./../exceptions/FuncNotFoundError');
+var NotConnectedError = require('./../exceptions/NotConnectedError');
 
 function BeamClient(url) {
     var self = this;
@@ -36,8 +36,8 @@ BeamClient.prototype.call = function(methodName, params) {
     params = params || [];
 
     // make sure client is allowed to call the function
-    if (!this.connected) { throw new NotConnected(); }
-    if (this.functions[methodName] === undefined) { throw new FuncNotFound(); }
+    if (!this.connected) { throw new NotConnectedError(); }
+    if (this.functions[methodName] === undefined) { throw new FuncNotFoundError(); }
 
     // return a promise of the invoked function
     return this.client.invokeAsync(methodName, params)
