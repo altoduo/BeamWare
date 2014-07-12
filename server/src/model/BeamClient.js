@@ -24,7 +24,7 @@ function BeamClient(url) {
         self.call('BW_functions', [])
         .then(function(result) {
             console.log('Got list of functions...');
-            self.functions = result;
+            self.functions = JSON.parse(result);
             self.connected = true;
         });
     }, 5000);
@@ -36,9 +36,27 @@ BeamClient.prototype.call = function(methodName, params) {
     // if params is undefined, set it to a blank array
     params = params || [];
 
+
+    console.log('-- function list --');
+    console.log(self.functions);
+    console.log('-- function name --');
+    console.log(methodName);
+
+    console.log('-- typeof functions --');
+    console.log(typeof this.functions);
+    console.log(this.functions === self.functions);
+
+    console.log('--keys--');
+    console.log(Object.keys(this.functions));
+
     // make sure client is allowed to call the function
-    if (!this.connected) { throw new ex.NotConnectedError(); }
-    if (this.functions[methodName] === undefined) { throw new ex.FuncNotFoundError(); }
+    if (!this.connected) {
+        throw new ex.NotConnectedError();
+    }
+    if (this.functions[methodName] === undefined) {
+        console.log('could not find func');
+        throw new ex.FuncNotFoundError();
+    }
 
     // return a promise of the invoked function
     return this.client.invokeAsync(methodName, params)
