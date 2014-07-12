@@ -5,6 +5,8 @@ var Promise = require('bluebird');
 var BeamServer = require('./model/BeamServer');
 var beamServer = new BeamServer();
 
+var ex = require('./exceptions');
+
 var Promise = require('bluebird');
 
 router.post('/rpc/registration', function(req, res) {
@@ -62,7 +64,16 @@ router.get('/:name/:function', function(req, res) {
         throw new ex.FuncNotFoundError();
     }
 
-    client.call(fn, [])
+    // build up the parameters
+    var args = [];
+    if (req.query.args !== undefined) {
+        // split on comma unless escaped
+        args = req.query.args.split(/[^\\],/);
+    }
+
+    console.log('-- here are the logs --');
+
+    client.call(fn, args)
     .then(function(result) {
         res.send(200, result);
     });

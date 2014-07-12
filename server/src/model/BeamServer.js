@@ -9,7 +9,10 @@ function BeamServer() {
 }
 
 BeamServer.prototype.connect = function(name, url) {
+    // get rid of naming conflicts
     if (this.clients[name] !== undefined) {
+        throw new ex.NameConflictError();
+    } else if (name === 'rpc') {
         throw new ex.NameConflictError();
     }
 
