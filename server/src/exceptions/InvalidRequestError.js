@@ -5,4 +5,6 @@ function InvalidRequestError() {
     this.toString = function(){return this.name + ": " + this.message;};
 }
 
+InvalidRequestError.prototype = new Error();
+
 module.exports = InvalidRequestError;

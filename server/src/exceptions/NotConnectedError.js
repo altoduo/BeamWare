@@ -5,4 +5,6 @@ function NotConnected() {
     this.toString = function(){return this.name + ": " + this.message;};
 }
 
+NotConnected.prototype = new Error();
+
 module.exports = NotConnected;

@@ -8,6 +8,8 @@ var ex = require('../exceptions');
 function BeamClient(url) {
     var self = this;
 
+    console.log('Creating a new BeamClient with url: ' + url);
+
     this.functions = {'BW_functions': {args: []}};
     this.connected = true;
 

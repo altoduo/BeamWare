@@ -5,4 +5,6 @@ function FuncNotFound() {
     this.toString = function(){return this.name + ": " + this.message;};
 }
 
+FuncNotFound.prototype = new Error();
+
 module.exports = FuncNotFound;

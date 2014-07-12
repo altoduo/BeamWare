@@ -6,4 +6,6 @@ function NameConflictError() {
     this.toString = function(){return this.name + ": " + this.message;};
 }
 
+NameConflictError.prototype = new Error();
+
 module.exports = NameConflictError;

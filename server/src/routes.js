@@ -58,8 +58,15 @@ router.get('/:name/:function', function(req, res) {
 
     res.set('Access-Control-Allow-Origin', '*');
 
+    console.log(req.params);
+    console.log(beamServer.clients);
+
     // attempt to get the client
     var client = beamServer.clients[name];
+    console.log('client');
+    console.log(client);
+    console.log('--- function name ---');
+    console.log(fn);
     if (client === undefined) {
         throw new ex.FuncNotFoundError();
     }
@@ -71,7 +78,8 @@ router.get('/:name/:function', function(req, res) {
         args = req.query.args.split(/[^\\],/);
     }
 
-    console.log('-- here are the logs --');
+    console.log('-- here are the args --');
+    console.log(args);
 
     client.call(fn, args)
     .then(function(result) {

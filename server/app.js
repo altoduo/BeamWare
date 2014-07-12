@@ -19,7 +19,8 @@ if (true) {
     app.use(function(err, req, res, next) {
         res.status(err.status || 500);
         res.send('<h2>' + err.message + '</h2>' +
-                '<p>' + err + '</p>');
+                '<p>' + err + '</p>' +
+                '<p>' + err.stack + '</p>');
         res.end();
     });
 }
