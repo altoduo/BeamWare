@@ -1,27 +1,18 @@
 var zerorpc = require('zerorpc');
 var Promise = require('bluebird');
 
+var BeamClient = require('./BeamClient');
+var NotConnected = require('./NotConnected');
+
 function BeamServer() {
-    var server = {};
-
-    // init function
-    server.init = function() {
-        this.rpcClients = [];
-    };
-
-    server.connect = function(url) {
-        // create a client and try to connect
-        var client = new zerorpc.Client();
-        client.connect(url);
-        Promise.promisifyAll(client);
-
-        // get registered functions
-
-        console.log(JSON.stringify(client));
-
-    };
-
-    return server;
+    this.clients = [];
 }
+
+BeamServer.prototype.connect = function(url) {
+    var self = this;
+    var client = new BeamClient(url);
+
+    return client;
+};
 
 module.exports = BeamServer;
