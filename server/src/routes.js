@@ -53,6 +53,7 @@ router.get('/rpc', function(req, res) {
 router.get('/:name', function(req, res) {
     var name = req.params.name;
 
+    // 404 if the client doesn't exist
     var client = beamServer.clients[name];
     if (client === undefined) {
         res.send(404).end();

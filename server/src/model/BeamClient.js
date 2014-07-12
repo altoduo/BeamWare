@@ -7,8 +7,10 @@ var FuncNotFound = require('./FuncNotFound');
 var NotConnected = require('./NotConnected');
 
 function BeamClient(url) {
-    this.functions = {'_functions': {args: []}};
-    this.connected = false;
+    var self = this;
+
+    this.functions = {'BW_functions': {args: []}};
+    this.connected = true;
 
     // connect the server - use heartbeat interval of 250ms
     this.client = new zerorpc.Client({heartBeatInterval: 250});
@@ -16,17 +18,20 @@ function BeamClient(url) {
     this.client = Promise.promisifyAll(this.client);
 
     // attempt handshake
-    this.call('_functions')
+    this.call('BW_functions', [])
     .then(function(result) {
-        console.log('-- available functions --');
-        console.log(result);
-        this.functions = JSON.parse(result);
-
-        this.connected = true;
+        console.log('Got list of functions...');
+        self.functions = result;
+        self.connected = true;
     });
 }
 
 BeamClient.prototype.call = function(methodName, params) {
+    var self = this;
+
+    // if params is undefined, set it to a blank array
+    params = params || [];
+
     // make sure client is allowed to call the function
     if (!this.connected) { throw new NotConnected(); }
     if (this.functions[methodName] === undefined) { throw new FuncNotFound(); }
@@ -39,6 +44,8 @@ BeamClient.prototype.call = function(methodName, params) {
         .catch(function(e) {
             console.log('there was an error');
             console.log(e);
+
+            self.connected = false;
             throw e;
         });
 };
