@@ -20,11 +20,12 @@ router.post('/rpc/registration', function(req, res) {
     try {
         beamServer.connect(name, url);
     } catch (e) {
-        console.log('misc error: ' + e);
+        console.log('Error on connecting to the host');
+        console.log(e.toString());
         var code = parseInt(e.message);
 
         // throw the error if it isn't a simple status code
-        if (code === undefined) {
+        if (typeof code !== 'number' && !isNan(code)) {
             throw e;
         }
 
@@ -42,6 +43,18 @@ router.get('/rpc', function(req, res) {
     res.send(200, Object.keys(beamServer.clients)).end();
 });
 
+router.get('/:name', function(req, res) {
+    var name = req.params.name;
+
+    var client = beamServer.clients[name];
+    if (client === undefined) {
+        res.send(404).end();
+    }
+
+    // send the functions associated with that client
+    res.send(200, client.functions).end();
+});
+
 router.get('/:name/:function', function(req, res) {
     var name = req.params.name;
     var fn = req.params.function;
@@ -52,10 +65,15 @@ router.get('/:name/:function', function(req, res) {
         res.send(404).end();
     }
 
-    client.call(fn, [])
-    .then(function(result) {
-        res.send(200, result);
-    });
+    try {
+        client.call(fn, [])
+        .then(function(result) {
+            res.send(200, result);
+        });
+    } catch (e) {
+        console.log(e);
+        res.send(500).end();
+    }
 });
 
 router.get('/test', function(req, res) {
