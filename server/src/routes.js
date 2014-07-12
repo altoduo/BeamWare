@@ -43,7 +43,19 @@ router.get('/rpc', function(req, res) {
 });
 
 router.get('/:name/:function', function(req, res) {
-    
+    var name = req.params.name;
+    var fn = req.params.function;
+
+    // attempt to get the client
+    var client = beamServer.clients[name];
+    if (client === undefined) {
+        res.send(404).end();
+    }
+
+    client.call(fn, [])
+    .then(function(result) {
+        res.send(200, result);
+    });
 });
 
 router.get('/test', function(req, res) {
