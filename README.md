@@ -3,4 +3,4 @@ BeamWare
 
 Dependencies
 ------------
-* [ZeroRPC | http://zerorpc.dotcloud.com/]
+* [ZeroRPC|http://zerorpc.dotcloud.com/]
