@@ -2,7 +2,7 @@ var zerorpc = require('zerorpc');
 var Promise = require('bluebird');
 
 var BeamClient = require('./BeamClient');
-var NotConnectedError = require('./../exceptions/NotConnectedError');
+var ex = require('../exceptions');
 
 function BeamServer() {
     this.clients = {};
@@ -10,7 +10,7 @@ function BeamServer() {
 
 BeamServer.prototype.connect = function(name, url) {
     if (this.clients[name] !== undefined) {
-        throw new Error('409');
+        throw new ex.NameConflictError();
     }
 
     var client = new BeamClient(url);
