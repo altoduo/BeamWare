@@ -16,9 +16,6 @@ function BeamClient(url) {
 }
 
 BeamClient.prototype.call = function(methodName, params) {
-    // save the function calls to the class so runInThisContext can pull
-    // the information
-
     return this.client.invokeAsync(methodName, params)
         .then(function(res, more) {
             return res;
