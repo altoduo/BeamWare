@@ -8,7 +8,42 @@ var beamServer = new BeamServer();
 var Promise = require('bluebird');
 
 router.post('/rpc/registration', function(req, res) {
-    res.send(200).end();
+    // get post information
+    var url = req.body.url;
+    var name = req.body.name;
+    if (url === undefined || name === undefined) {
+        res.send(400).end();
+        return;
+    }
+
+    // connect and assume everything is good
+    try {
+        beamServer.connect(name, url);
+    } catch (e) {
+        console.log('misc error: ' + e);
+        var code = parseInt(e.message);
+
+        // throw the error if it isn't a simple status code
+        if (code === undefined) {
+            throw e;
+        }
+
+        // send the response
+        res.send(code).end();
+        return;
+    }
+
+    // if connected to RPC ok, send a 201
+    res.send(201).end();
+});
+
+// returns a list of all rpc servers
+router.get('/rpc', function(req, res) {
+    res.send(200, Object.keys(beamServer.clients)).end();
+});
+
+router.get('/:name/:function', function(req, res) {
+    
 });
 
 router.get('/test', function(req, res) {

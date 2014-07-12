@@ -5,12 +5,18 @@ var BeamClient = require('./BeamClient');
 var NotConnected = require('./NotConnected');
 
 function BeamServer() {
-    this.clients = [];
+    this.clients = {};
 }
 
-BeamServer.prototype.connect = function(url) {
-    var self = this;
+BeamServer.prototype.connect = function(name, url) {
+    if (this.clients[name] !== undefined) {
+        throw new Error('409');
+    }
+
     var client = new BeamClient(url);
+
+    // save away the clients variable
+    this.clients[name] = client;
 
     return client;
 };
