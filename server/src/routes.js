@@ -12,8 +12,7 @@ router.post('/rpc/registration', function(req, res) {
     var url = req.body.url;
     var name = req.body.name;
     if (url === undefined || name === undefined) {
-        res.send(400).end();
-        return;
+        throw new ex.InvalidRequestError();
     }
 
     // connect and assume everything is good
@@ -24,21 +23,7 @@ router.post('/rpc/registration', function(req, res) {
         console.log(e.toString());
         var code = parseInt(e.message);
 
-        // throw the error if it isn't a simple status code
-        if (typeof code !== 'number' && !isNan(code)) {
-            throw e;
-        }
-
-        // send bad gateway if can't connect to client or the '_functions'
-        // doesn't exist
-        if (e.name === 'NotConnectedError' || e.name === 'FuncNotFoundError') {
-            res.send(502).end();
-            return;
-        }
-
-        // send the response
-        res.send(code).end();
-        return;
+        throw e;
     }
 
     // if connected to RPC ok, send a 201
