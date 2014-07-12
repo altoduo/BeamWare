@@ -27,7 +27,7 @@ class BeamLib(object):
         self.func_json = json.dumps(self.func_json)
         self._init_meta_functions()
         self._init_server(port)
-        self._handshake()
+        #self._handshake()
         self._run()
 
     def _handshake(self):
