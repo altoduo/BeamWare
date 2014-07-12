@@ -17,13 +17,16 @@ function BeamClient(url) {
     this.client.connect(url);
     this.client = Promise.promisifyAll(this.client);
 
-    // attempt handshake
-    this.call('BW_functions', [])
-    .then(function(result) {
-        console.log('Got list of functions...');
-        self.functions = result;
-        self.connected = true;
-    });
+    // attempt handshake after a couple of seconds
+    setTimeout(function() {
+        console.log('getting list of functions...');
+        self.call('BW_functions', [])
+        .then(function(result) {
+            console.log('Got list of functions...');
+            self.functions = result;
+            self.connected = true;
+        });
+    }, 5000);
 }
 
 BeamClient.prototype.call = function(methodName, params) {
