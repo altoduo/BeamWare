@@ -8,10 +8,6 @@ var app = express();
 
 console.log('Starting BeamWare Server...');
 
-// set application paths
-app.set('views', path.join(__dirname, 'src/views'));
-app.set('util', path.join(__dirname, 'src/util'));
-
 // set routes and tell express to accept JSON docs
 app.use(bodyParser.json());
 app.use('/', routes);
@@ -22,10 +18,9 @@ app.use('/', routes);
 if (true) {
     app.use(function(err, req, res, next) {
         res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
+        res.send('<h2>' + err.message + '</h2>' +
+                '<p>' + err + '</p>');
+        res.end();
     });
 }
 
