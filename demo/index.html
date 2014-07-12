@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
+
+        <script>
+            $(document).ready(function() {
+                // get the list of functions available on the test host
+                $.ajax({
+                    dataType: 'json',
+                    url: 'http://localhost:3000/test',
+                    success: function(data) {
+                        var keys = Object.keys(data);
+
+                        _.forEach(keys, function(key) {
+                            var html = '<button type="button" class="btn btn-default">' + key + '</button>';
+                            var elem = $(html).attr('data-url', 'http://localhost:3000/test/' + key);
+
+                            console.log(elem);
+
+                            elem.click(function(e) {
+                                var url = $(e.target).attr('data-url');
+                                $.ajax({
+                                    dataType: 'text',
+                                    url: url,
+                                    success: function(data) {
+                                        console.log(e);
+                                        alert('Completed function, return data: ' + data);
+                                    }
+                                });
+                            });
+
+                            elem.insertAfter('#topel');
+                        });
+                    }
+                });
+            });
+        </script>
+    </head>
+
+    <body>
+        <h2 id="topel">BeamWare Demo<h2>
+    </body>
+</html>
