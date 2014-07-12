@@ -1,0 +1,34 @@
+{
+  "name": "BeamWare-server",
+  "version": "0.0.0",
+  "description": "RESTful server for the BeamWare system",
+  "main": "app.js",
+  "dependencies": {
+    "bluebird": "^2.2.1",
+    "body-parser": "^1.4.3",
+    "express": "^4.6.0",
+    "underscore": "^1.6.0",
+    "zerorpc": "^0.9.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:DepthDeluxe/BeamWare.git"
+  },
+  "keywords": [
+    "rest",
+    "http",
+    "raspberry",
+    "pi",
+    "rpi"
+  ],
+  "author": "Colin Heinzmann & Jamshed Vesuna",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DepthDeluxe/BeamWare/issues"
+  },
+  "homepage": "https://github.com/DepthDeluxe/BeamWare"
+}
