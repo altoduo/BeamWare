@@ -53,6 +53,8 @@ router.get('/rpc', function(req, res) {
 router.get('/:name', function(req, res) {
     var name = req.params.name;
 
+    res.set('Access-Control-Allow-Origin', '*');
+
     // 404 if the client doesn't exist
     var client = beamServer.clients[name];
     if (client === undefined) {
@@ -66,6 +68,8 @@ router.get('/:name', function(req, res) {
 router.get('/:name/:function', function(req, res) {
     var name = req.params.name;
     var fn = req.params.function;
+
+    res.set('Access-Control-Allow-Origin', '*');
 
     // attempt to get the client
     var client = beamServer.clients[name];
