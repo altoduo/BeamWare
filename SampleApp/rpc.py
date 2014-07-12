@@ -2,8 +2,8 @@
 BeamWare RPC Server Functions
 """
 
-def _functions(function_json):
-    return function_json
+def BW_functions(self):
+    return self.func_json
 
-def _class_name(class_name):
-    return class_name
+def BW_class_name(self):
+    return self.app_name

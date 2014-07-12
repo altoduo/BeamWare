@@ -5,26 +5,39 @@ BeamWare Library for the Client Application
 import zerorpc
 import json
 import inspect
+from types import MethodType
 
-from rpc import _functions, _class_name
+from rpc import BW_functions, BW_class_name
 
 class BeamLib(object):
 
     def __init__(self, client_app_class, port = 4242):
-        self.app = client_app_class
         #TODO: Add class checking, throw exception otherwise
-        self._init_server(client_app_class, port)
+        self.app = client_app_class
         self.app_name = ""
         self.func_json = {}
+
         self._derobe(client_app_class)
+        self._init_meta_functions()
+        self._init_server(port)
         self._run()
 
-    def _init_server(self, app, port):
+    def _init_meta_functions(self):
+        """
+        Adds meta functions to client class for RPC
+        Clean this up and automate!
+        """
+        self.app.func_json = self.func_json
+        self.app.app_name = self.app_name
+        self.app.BW_functions = MethodType(BW_functions,self.app)
+        self.app.BW_class_name = MethodType(BW_class_name, self.app)
+
+    def _init_server(self, port):
         """
         Test for valid class and initialize RPC server
         """
         try:
-            is_class = inspect.isclass(app)
+            is_class = inspect.isclass(self.app)
         except NameError as e:
             raise e
         print "Binding server to port %d..." % (port)
