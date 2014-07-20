@@ -1,4 +1,4 @@
-var zerorpc = require('zerorpc');
+var zerorpc = require('zerorpc-plus');
 var Promise = require('bluebird');
 
 var BeamClient = require('./BeamClient');
