@@ -9,7 +9,6 @@ import json
 import requests
 import socket
 import subprocess
-import threading
 import zerorpc
 
 from rpc import BW_functions, BW_class_name
@@ -31,6 +30,10 @@ class BeamLib(object):
         self._run()
 
     def _handshake(self):
+        """
+        Handshake with the BeamWare Node server and
+        send a list of functions and ip address
+        """
         local_ip = self._get_local_ip()
         tcp = 'tcp://' + local_ip + ':' + str(self.port)
         http = 'http://' + self.node_server_ip + ':3000/rpc/registration'
