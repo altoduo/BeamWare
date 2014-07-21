@@ -20,21 +20,27 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-nodemon');
 };
 
+var Promise = require('bluebird');
+var fs = require('fs');
 var child_process = require('child_process');
 var pythonProcess;
 
 function launchPythonClient() {
     // spawn the python process
-    setTimeout(function() {
-        pythonProcess = child_process.spawn('python2', ['../SampleApp/my_app.py'], {
-            stdio: 'inherit'
-        });
-    }, 2500);
+    Promise.delay(2500)
+    .then(function() {
+        // open up a logging file
+        var logStream = fs.createWriteStream('./myapp.log');
 
-    pythonProcess.on('exit', function(code) {
-        if (code !== 0) {
-            console.log('Client App stopped running!');
-        }
+        pythonProcess = child_process.spawn('python2', ['../SampleApp/my_app.py']);
+        pythonProcess.stdout.pipe(logStream);
+        pythonProcess.stderr.pipe(logStream);
+
+        pythonProcess.on('exit', function(code) {
+            if (code !== 0) {
+                console.log('Client App stopped running!');
+            }
+        });
     });
 }
 
