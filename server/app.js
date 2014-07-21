@@ -14,26 +14,25 @@ app.use('/', routes);
 
 // development error handler
 // will print stacktrace
-//if (app.get('env') === 'development') {
-if (true) {
-    app.use(function(err, req, res, next) {
-        res.status(err.status || 500);
-        res.send('<h2>' + err.message + '</h2>' +
-                '<p>' + err + '</p>' +
-                '<p>' + err.stack + '</p>');
-        res.end();
-    });
-}
+app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.send('<h2>' + err.message + '</h2>' +
+            '<p>' + err + '</p>' +
+            '<p>' + err.stack + '</p>');
+    res.end();
+});
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
+if (process.env.MODE === 'production') {
+    app.use(function(err, req, res, next) {
+        res.status(err.status || 500);
+        res.render('error', {
+            message: err.message,
+            error: {}
+        });
     });
-});
+}
 
 // listen on port 3000
 app.listen(3000);
