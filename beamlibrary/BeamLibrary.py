@@ -88,6 +88,8 @@ class BeamLib(object):
         for func in func_lst:
             if func in core_methods:
                 continue
+            if func[0] == "_":
+                continue
             ref_func = getattr(app, str(func))
             if not inspect.ismethod(ref_func):
                 raise TypeError("%s is not a method!" % (func))
