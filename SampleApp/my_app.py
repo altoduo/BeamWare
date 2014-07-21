@@ -3,7 +3,7 @@ BeamWare Sample Client Application
 """
 
 import subprocess
-import BeamLibrary
+from beamlibrary import BeamLibrary
 
 
 class MyApp(object):

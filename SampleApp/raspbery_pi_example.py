@@ -3,9 +3,10 @@ BeamWare Sample Raspberry Pi GPIO Application
 """
 
 import subprocess
-import BeamLibrary
 import RPi.GPIO as gp
 import time
+
+from beamlibrary import BeamLibrary
 
 class MyApp(object):
 
