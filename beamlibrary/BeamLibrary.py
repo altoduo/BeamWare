@@ -12,7 +12,7 @@ import socket
 import subprocess
 
 
-from rpc import BW_functions, BW_class_name
+from rpc import *
 from zerorpcpython import zerorpc
 
 class BeamLib(object):
