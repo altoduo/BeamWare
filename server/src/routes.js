@@ -9,6 +9,15 @@ var ex = require('./exceptions');
 
 var Promise = require('bluebird');
 
+var fs = require('fs');
+fs = Promise.promisifyAll(fs);
+router.get('/', function(req, res) {
+    fs.readFileAsync(__dirname + '/../demo.html')
+    .then(function(data) {
+        res.end(data);
+    });
+});
+
 router.post('/rpc/registration', function(req, res) {
     // get post information
     var url = req.body.url;
