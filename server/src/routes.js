@@ -60,18 +60,21 @@ router.get('/:name/:function', function(req, res) {
 
     // attempt to get the client
     var client = beamServer.clients[name];
-    //if (client === undefined) {
-    //    throw new ex.FuncNotFoundError();
-    //}
+    if (client === undefined) {
+        throw new ex.FuncNotFoundError();
+    }
+
+    console.log('-- req.query.args --');
+    console.log(req.query.args);
 
     // build up the parameters
     var args = [];
     if (req.query.args !== undefined) {
         // split on comma unless escaped
-        args = req.query.args.split(/[^\\],/);
+        args = req.query.args.split(/,/);
     }
 
-    console.log('-- here are the args --');
+    console.log('-- arg list --');
     console.log(args);
 
     client.call(fn, args)
