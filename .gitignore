@@ -29,3 +29,6 @@ wiki/
 
 # test json files
 test.json
+
+# python stuff
+*.pyc
