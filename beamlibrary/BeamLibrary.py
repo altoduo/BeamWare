@@ -24,7 +24,8 @@ class BeamLib(object):
         self.app = client_app_class
         self.app_name = ""
         self.func_json = {}
-        self._derobe(client_app_class)
+        self._init_app_meta_functions()
+        self._derobe(self.app)
         self.func_json = json.dumps(self.func_json)
         self._init_meta_functions()
         self._init_server(port)
@@ -43,9 +44,12 @@ class BeamLib(object):
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
         r = requests.post(http, data=json.dumps(data), headers=headers)
 
+    def _init_app_meta_functions(self):
+        self.app.BW_refresh = MethodType(BW_refresh, self.app)
+
     def _init_meta_functions(self):
         """
-        Adds meta functions to client class for RPC
+        Adds meta functions to client class for RPC - Internal Only
         Clean this up and automate!
         """
         self.app.func_json = self.func_json
@@ -105,6 +109,14 @@ class BeamLib(object):
     def _run(self):
         print "RPC Server Started..."
         self.server.run()
+
+    def _deregister(self):
+        """
+        Deregister the client app from the node server
+        Shutdown the rpc server
+        """
+        self.server.close()
+        self.server.stop()
 
     def _get_local_ip(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
