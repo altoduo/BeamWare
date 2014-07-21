@@ -9,15 +9,6 @@ var ex = require('./exceptions');
 
 var Promise = require('bluebird');
 
-var fs = require('fs');
-fs = Promise.promisifyAll(fs);
-router.get('/', function(req, res) {
-    fs.readFileAsync(__dirname + '/../demo.html')
-    .then(function(data) {
-        res.end(data);
-    });
-});
-
 router.post('/rpc/registration', function(req, res) {
     // get post information
     var url = req.body.url;
@@ -86,6 +77,10 @@ router.get('/:name/:function', function(req, res) {
     client.call(fn, args)
     .then(function(result) {
         res.send(200, result);
+    })
+    .catch(function(err) {
+        console.log('there was a zerorpc error');
+        res.status(500).end();
     });
 });
 
