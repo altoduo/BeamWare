@@ -70,10 +70,7 @@ router.get('/:name/:function', function(req, res) {
         // split on comma unless escaped
         args = req.query.args.split(/[^\\],/);
     }
-
-    console.log('-- here are the args --');
-    console.log(args);
-
+    
     client.call(fn, args)
     .then(function(result) {
         res.send(200, result);
