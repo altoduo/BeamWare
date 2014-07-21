@@ -30,6 +30,12 @@ function launchPythonClient() {
             stdio: 'inherit'
         });
     }, 2500);
+
+    pythonProcess.on('exit', function(code) {
+        if (code !== 0) {
+            console.log('Client App stopped running!');
+        }
+    });
 }
 
 function restartPythonClient() {
