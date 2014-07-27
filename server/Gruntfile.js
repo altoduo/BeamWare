@@ -7,10 +7,14 @@ module.exports = function(grunt) {
                 options: {
                     callback: function(nodemon) {
                         // gets run when server first starts
-                        nodemon.on('config:update', launchPythonClient);
+                        nodemon.on('config:update', function() {
+                            PythonControl.start();
+                        });
 
                         // gets run when changes detected
-                        nodemon.on('restart', restartPythonClient);
+                        nodemon.on('restart', function() {
+                            PythonControl.restart();
+                        });
                     }
                 }
             }
@@ -23,30 +27,32 @@ module.exports = function(grunt) {
 var Promise = require('bluebird');
 var fs = require('fs');
 var child_process = require('child_process');
-var pythonProcess;
 
-function launchPythonClient() {
-    // spawn the python process
-    Promise.delay(2500)
-    .then(function() {
-        // open up a logging file
-        var logStream = fs.createWriteStream('./myapp.log');
+var PythonControl = {
+    restart: function() {
+        // kill the current process
+        this.pythonProcess.kill('SIGKILL');
 
-        pythonProcess = child_process.spawn('python2', ['../SampleApp/my_app.py']);
-        pythonProcess.stdout.pipe(logStream);
-        pythonProcess.stderr.pipe(logStream);
+        launchPythonClient();
+    },
 
-        pythonProcess.on('exit', function(code) {
-            if (code !== 0) {
-                console.log('Client App stopped running!');
-            }
+    start: function() {
+        var self = this;
+        // spawn the python process
+        Promise.delay(2500)
+        .then(function() {
+            // open up a logging file
+            var logStream = fs.createWriteStream('./myapp.log');
+
+            self.pythonProcess = child_process.spawn('python2', ['../SampleApp/my_app.py']);
+            self.pythonProcess.stdout.pipe(logStream);
+            self.pythonProcess.stderr.pipe(logStream);
+
+            self.pythonProcess.on('exit', function(code) {
+                if (code !== 0) {
+                    console.log('Client App stopped running!');
+                }
+            });
         });
-    });
-}
-
-function restartPythonClient() {
-    // kill the current process
-    pythonProcess.kill('SIGKILL');
-
-    launchPythonClient();
-}
+    }
+};
