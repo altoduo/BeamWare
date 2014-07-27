@@ -1,5 +1,10 @@
+var Promise = require('bluebird');
+var fs = require('fs');
+var child_process = require('child_process');
+
 module.exports = function(grunt) {
 
+    // initialize the grunt-nodemon configuration
     grunt.initConfig({
         nodemon: {
             dev: {
@@ -20,20 +25,27 @@ module.exports = function(grunt) {
             }
         }
     });
-
     grunt.loadNpmTasks('grunt-nodemon');
-};
 
-var Promise = require('bluebird');
-var fs = require('fs');
-var child_process = require('child_process');
+    grunt.registerTask('run', function() {
+        // start up the server
+        var Server = require('./app');
+        grunt.task.run(['keepalive']);
+    });
+
+    grunt.registerTask('keepalive', function() {
+        // stay alive forever
+        setInterval(function(){}, 60*60*1000);
+        this.async();
+    });
+};
 
 var PythonControl = {
     restart: function() {
         // kill the current process
         this.pythonProcess.kill('SIGKILL');
 
-        launchPythonClient();
+        this.start();
     },
 
     start: function() {
