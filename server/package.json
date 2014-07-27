@@ -7,7 +7,8 @@
     "bluebird": "^2.2.1",
     "body-parser": "^1.4.3",
     "express": "^4.6.0",
-    "underscore": "^1.6.0"
+    "underscore": "^1.6.0",
+    "zerorpc-plus": "git://github.com/DepthDeluxe/zerorpc-node"
   },
   "devDependencies": {
     "grunt-nodemon": "^0.3.0"
