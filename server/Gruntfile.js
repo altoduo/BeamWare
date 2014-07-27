@@ -20,8 +20,12 @@ module.exports = function(grunt) {
                         nodemon.on('restart', function() {
                             PythonControl.restart();
                         });
-                    }
+                    },
+
+                    watch: ['../'],
+                    ext: 'js,py'
                 }
+
             }
         }
     });
@@ -38,6 +42,16 @@ module.exports = function(grunt) {
         setInterval(function(){}, 60*60*1000);
         this.async();
     });
+
+    grunt.registerTask('dev', function(name) {
+        if (name) {
+            PythonControl.app = name;
+        } else {
+            PythonControl.app = "my_app.py";
+        }
+
+        grunt.task.run(['nodemon']);
+    });
 };
 
 var PythonControl = {
@@ -49,6 +63,10 @@ var PythonControl = {
     },
 
     start: function() {
+        if (!this.app) {
+            throw new Error('Need to provide application name');
+        }
+
         var self = this;
         // spawn the python process
         Promise.delay(2500)
@@ -56,7 +74,7 @@ var PythonControl = {
             // open up a logging file
             var logStream = fs.createWriteStream('./myapp.log');
 
-            self.pythonProcess = child_process.spawn('python2', ['../SampleApp/my_app.py']);
+            self.pythonProcess = child_process.spawn('python2', ['../SampleApp/' + self.app]);
             self.pythonProcess.stdout.pipe(logStream);
             self.pythonProcess.stderr.pipe(logStream);
 
