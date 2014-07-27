@@ -29,12 +29,23 @@ router.post('/rpc/registration', function(req, res) {
     }
 
     // if connected to RPC ok, send a 201
-    res.send(201).end();
+    res.status(201).end();
 });
 
 // returns a list of all rpc servers
 router.get('/rpc', function(req, res) {
     res.send(200, Object.keys(beamServer.clients)).end();
+});
+
+router.post('/heartbeat', function(req, res) {
+    try {
+        var name = req.body.app;
+        beamServer.clients[name].heartbeat();
+    } catch(err) {
+        res.status(500).end();
+    }
+
+    res.status(200).end();
 });
 
 router.get('/:name', function(req, res) {
@@ -70,7 +81,7 @@ router.get('/:name/:function', function(req, res) {
         // split on comma unless escaped
         args = req.query.args.split(/[^\\],/);
     }
-    
+
     client.call(fn, args)
     .then(function(result) {
         res.send(200, result);

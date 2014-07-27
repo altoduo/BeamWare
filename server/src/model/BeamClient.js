@@ -18,6 +18,9 @@ function BeamClient(url) {
     this.client.connect(url);
     this.client = Promise.promisifyAll(this.client);
 
+    // default timeout is 30 seconds
+    this.heartbeatTimeout = 30*1000;
+
     // attempt handshake after a couple of seconds
     setTimeout(function() {
         console.log('getting list of functions...');
@@ -65,6 +68,36 @@ BeamClient.prototype.call = function(methodName, args) {
 BeamClient.prototype.disconnect = function() {
     this.client = null;
     this.connected = false;
+};
+
+BeamClient.prototype.heartbeat = function() {
+    var self = this;
+
+    // heartbeat loop will run every time in the interval
+    function loop() {
+        // break out if the client disconnected externally
+        if (self === undefined) {
+            return;
+        }
+
+        // disconnect if 0 beats in last interval
+        if (self.numBeats < 1) {
+            self.disconnect();
+        }
+
+        self.numBeats = 0;
+
+        return Promise
+            .delay(self.heartbeatTimeout)
+            .then(loop);
+    }
+
+    if (this.promise === undefined) {
+        this.numBeats = 0;
+        this.promise = loop();
+    }
+
+    numBeats++;
 };
 
 module.exports = BeamClient;
