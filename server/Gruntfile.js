@@ -33,20 +33,24 @@ module.exports = function(grunt) {
 
     grunt.registerTask('prepare', function() {
         var child = child_process.spawn('mkdir', ['./data']);
+        var done = this.async();
 
         setTimeout(function() {
+            done();
         }, 500);
 
-        this.async();
     });
 
     grunt.registerTask('clean', function() {
         child_process.spawn('rm', ['-rf', ['./data']]);
+        var done = this.async();
 
         setTimeout(function() {
             // prepare the space again
             grunt.task.run(['prepare']);
+            done();
         }, 500);
+
     });
 
     grunt.registerTask('run', function() {
