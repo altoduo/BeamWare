@@ -22,13 +22,16 @@ build/Release
 # Dependency directory
 # Deployed apps should consider commenting this line out:
 # see https://npmjs.org/doc/faq.html#Should-I-check-my-node_modules-folder-into-git
-node_modules
+node_modules/
 
 # Ignore submodules
-zerorpcpython
+zerorpcpython/
 
 # ignore the wiki git repo
 wiki/
+
+# ignore data dir
+data/
 
 # test json files
 test.json
