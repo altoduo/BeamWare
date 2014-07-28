@@ -1,5 +1,6 @@
 var zerorpc = require('zerorpc-plus');
 var Promise = require('bluebird');
+var _ = require('underscore');
 var logger = require('winston');
 
 var BeamClient = require('./BeamClient');
@@ -19,7 +20,7 @@ BeamServer.prototype.connect = function(name, url) {
         throw new ex.NameConflictError();
     }
 
-    var client = new BeamClient(url);
+    var client = new BeamClient();
 
     // on disconnect, delete from the list of clients
     client.on('disconnect', function() {
@@ -30,7 +31,21 @@ BeamServer.prototype.connect = function(name, url) {
     // save away the clients variable
     this.clients[name] = client;
 
-    return client;
+    return client.connect(url)
+            .then(function() {
+                waitForConnect(client);
+            });
 };
+
+function waitForConnect(client) {
+    return Promise.delay(500)
+        .then(function() {
+            if (client.connected) {
+                return;
+            } else {
+                return waitForConnect(client);
+            }
+        });
+}
 
 module.exports = BeamServer;

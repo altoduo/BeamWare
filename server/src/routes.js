@@ -27,7 +27,7 @@ router.post('/rpc/registration', function(req, res) {
         beamServer.connect(name, url);
     } catch (e) {
         logger.error('Error while connecting to the host');
-        logger.error(e.toString());
+        logger.error(e.stack);
 
         throw e;
     }
