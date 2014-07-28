@@ -14,13 +14,13 @@
                 // get the list of functions available on the test host
                 $.ajax({
                     dataType: 'json',
-                    url: 'http://localhost:3000/test',
+                    url: 'http://localhost:3000/MyApp',
                     success: function(data) {
                         var keys = Object.keys(data);
 
                         _.forEach(keys, function(key) {
                             var html = '<button type="button" class="btn btn-default">' + key + '</button>';
-                            var elem = $(html).attr('data-url', 'http://localhost:3000/test/' + key);
+                            var elem = $(html).attr('data-url', 'http://localhost:3000/MyApp/' + key);
 
                             console.log(elem);
 

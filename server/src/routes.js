@@ -9,6 +9,10 @@ var ex = require('./exceptions');
 
 var Promise = require('bluebird');
 
+router.get('/', function(req, res) {
+    res.status(200).sendfile('./demo.html');
+});
+
 router.post('/rpc/registration', function(req, res) {
     // get post information
     var url = req.body.url;
