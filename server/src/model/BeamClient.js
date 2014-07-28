@@ -8,8 +8,8 @@ var ex = require('../exceptions');
 var ControlNames = require('../names');
 
 _.extend(BeamClient.prototype, EventEmitter.prototype);
-function BeamClient() {
-    var self = this;
+function BeamClient(name) {
+    this.name = name;
 
     this.functions = {};
     this.functions[ControlNames.listFunctions] = {args: []};
