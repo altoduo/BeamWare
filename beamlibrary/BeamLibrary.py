@@ -56,6 +56,7 @@ class BeamLib(object):
         self.app.app_name = self.app_name
         self.app.BW_functions = MethodType(BW_functions,self.app)
         self.app.BW_class_name = MethodType(BW_class_name, self.app)
+        self.app.BW_ping = MethodType(BW_ping, self.app)
 
     def _init_server(self, port):
         """

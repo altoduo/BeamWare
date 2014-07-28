@@ -8,6 +8,9 @@ def BW_functions(self):
 def BW_class_name(self):
     return self.app_name
 
+def BW_ping(self):
+    return "pong"
+
 def BW_refresh(self):
     self._deregister(self)
     reload(self.app)
