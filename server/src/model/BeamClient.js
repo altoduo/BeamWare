@@ -18,19 +18,36 @@ function BeamClient(url) {
     this.client.connect(url);
     this.client = Promise.promisifyAll(this.client);
 
-    // default timeout is 30 seconds
-    this.heartbeatTimeout = 30*1000;
+    // default interval is 30 seconds
+    this.heartbeatInterval = 30*1000;
+
+    // enable when client side has this supported
+    function heartbeatLoop() {
+        try {
+            self.call('_heartbeat');
+        } catch(err) {
+            console.log('client heartbeat error');
+            console.log(err);
+            return;
+        }
+
+        return Promise
+                .delay(self.heartbeatInterval)
+                .then(heartbeatLoop);
+    }
+    //heartbeatLoop();
 
     // attempt handshake after a couple of seconds
-    setTimeout(function() {
-        console.log('getting list of functions...');
-        self.call('BW_functions', [])
-        .then(function(result) {
-            console.log('Got list of functions...');
-            self.functions = JSON.parse(result);
-            self.connected = true;
+    Promise.delay(5000)
+        .then(function() {
+            console.log('getting list of functions...');
+            self.call('BW_functions', [])
+            .then(function(result) {
+                console.log('Got list of functions...');
+                self.functions = JSON.parse(result);
+                self.connected = true;
+            });
         });
-    }, 5000);
 }
 
 BeamClient.prototype.call = function(methodName, args) {
@@ -68,36 +85,6 @@ BeamClient.prototype.call = function(methodName, args) {
 BeamClient.prototype.disconnect = function() {
     this.client = null;
     this.connected = false;
-};
-
-BeamClient.prototype.heartbeat = function() {
-    var self = this;
-
-    // heartbeat loop will run every time in the interval
-    function loop() {
-        // break out if the client disconnected externally
-        if (self === undefined) {
-            return;
-        }
-
-        // disconnect if 0 beats in last interval
-        if (self.numBeats < 1) {
-            self.disconnect();
-        }
-
-        self.numBeats = 0;
-
-        return Promise
-            .delay(self.heartbeatTimeout)
-            .then(loop);
-    }
-
-    if (this.promise === undefined) {
-        this.numBeats = 0;
-        this.promise = loop();
-    }
-
-    numBeats++;
 };
 
 module.exports = BeamClient;
