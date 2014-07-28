@@ -9,6 +9,9 @@ var ex = require('../exceptions');
 
 function BeamServer() {
     this.clients = {};
+
+    // attempt a load from memory
+    this.load();
 }
 
 BeamServer.prototype.connect = function(name, url) {
@@ -54,8 +57,10 @@ BeamServer.prototype.eventify = function(client) {
 BeamServer.prototype.save = function() {
     var clientList = [];
     _.forEach(this.clients, function(client) {
-        logger.info(client.name);
-        logger.info(client.url);
+        if (client.name === undefined || client.url === undefined) {
+            return;
+        }
+
         clientList.push({
             name: client.name,
             url: client.url
@@ -64,6 +69,25 @@ BeamServer.prototype.save = function() {
 
     var data = JSON.stringify(clientList);
     return fs.writeFileAsync('./data/clients.json', data);
+};
+
+BeamServer.prototype.load = function() {
+    var self = this;
+
+    // connect to every file found in clients.json
+    return fs.readFileAsync('./data/clients.json')
+            .then(function(data) {
+                data = JSON.stringify(data);
+
+                _.forEach(data, function(client) {
+                    self.connect(client.name, client.url);
+                });
+            })
+            .catch(function(err) {
+                logger.warn(err);
+                logger.warn('Failed to find a clients.json');
+                logger.warn('This is OK if the app is being run for the first time');
+            });
 };
 
 function waitForConnect(client) {
