@@ -28,7 +28,6 @@ router.post('/rpc/registration', function(req, res) {
     } catch (e) {
         logger.error('Error while connecting to the host');
         logger.error(e.toString());
-        var code = parseInt(e.message);
 
         throw e;
     }
