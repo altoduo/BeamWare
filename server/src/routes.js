@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Promise = require('bluebird');
+var logger = require('winston');
 
 var BeamServer = require('./model/BeamServer');
 var beamServer = new BeamServer();
@@ -25,8 +26,8 @@ router.post('/rpc/registration', function(req, res) {
     try {
         beamServer.connect(name, url);
     } catch (e) {
-        console.log('Error while connecting to the host');
-        console.log(e.toString());
+        logger.error('Error while connecting to the host');
+        logger.error(e.toString());
         var code = parseInt(e.message);
 
         throw e;
@@ -80,7 +81,7 @@ router.get('/:name/:function', function(req, res) {
         res.send(200, result);
     })
     .catch(function(err) {
-        console.log('there was a zerorpc error');
+        logger.error('there was a zerorpc error');
         res.status(500).end();
     });
 });

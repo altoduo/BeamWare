@@ -8,6 +8,7 @@
     "body-parser": "^1.4.3",
     "express": "^4.6.0",
     "underscore": "^1.6.0",
+    "winston": "^0.7.3",
     "zerorpc-plus": "git://github.com/DepthDeluxe/zerorpc-node"
   },
   "devDependencies": {

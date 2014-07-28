@@ -1,5 +1,6 @@
 var zerorpc = require('zerorpc-plus');
 var Promise = require('bluebird');
+var logger = require('winston');
 
 var BeamClient = require('./BeamClient');
 var ex = require('../exceptions');
@@ -22,7 +23,7 @@ BeamServer.prototype.connect = function(name, url) {
 
     // on disconnect, delete from the list of clients
     client.on('disconnect', function() {
-        console.log('recieved a disconnect signal!');
+        logger.info('disconnecting: ' + name);
         delete self.clients[name];
     });
 

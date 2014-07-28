@@ -2,6 +2,7 @@ var zerorpc = require('zerorpc-plus');
 var Promise = require('bluebird');
 var _ = require('underscore');
 var EventEmitter = require('events').EventEmitter;
+var logger = require('winston');
 
 var ex = require('../exceptions');
 var ControlNames = require('../names');
@@ -10,7 +11,7 @@ _.extend(BeamClient.prototype, EventEmitter.prototype);
 function BeamClient(url) {
     var self = this;
 
-    console.log('Creating a new BeamClient with url: ' + url);
+    logger.info('Creating a new BeamClient with url: ' + url);
 
     this.functions = {};
     this.functions[ControlNames.listFunctions] = {args: []};
@@ -81,8 +82,8 @@ BeamClient.prototype.call = function(methodName, args) {
                 throw e;
             }
 
-            console.log('there was an error');
-            console.log(e);
+            logger.error('there was an error');
+            logger.error(e);
 
             self.connected = false;
             throw e;
@@ -90,8 +91,6 @@ BeamClient.prototype.call = function(methodName, args) {
 };
 
 BeamClient.prototype.disconnect = function() {
-    console.log('disconnecting');
-
     this.client = null;
     this.connected = false;
 
