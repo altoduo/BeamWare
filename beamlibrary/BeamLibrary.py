@@ -27,7 +27,6 @@ class BeamLib(object):
         self._init_app_meta_functions()
         self._derobe(self.app)
         self.func_json = json.dumps(self.func_json)
-        self._init_meta_functions()
         self._init_server(port)
         self._handshake()
         self._run()
@@ -45,21 +44,15 @@ class BeamLib(object):
         r = requests.post(http, data=json.dumps(data), headers=headers)
 
     def _init_app_meta_functions(self):
-        self.app.BW_refresh = MethodType(BW_refresh, self.app)
-        self.app.BW_ping = MethodType(BW_ping, self.app)
-        self.app.BW_class_name = MethodType(BW_class_name, self.app)
-        self.app.BW_functions = MethodType(BW_functions, self.app)
-
-    def _init_meta_functions(self):
         """
-        Adds meta functions to client class for RPC - Internal Only
-        Clean this up and automate!
+        Adds meta functions to the client application
         """
-        self.app.func_json = self.func_json
+        self.app._class_name = MethodType(_class_name, self.app)
+        self.app._functions = MethodType(_functions, self.app)
+        self.app._ping = MethodType(_ping, self.app)
+        self.app._refresh = MethodType(_refresh, self.app)
         self.app.app_name = self.app_name
-        self.app.BW_functions = MethodType(BW_functions,self.app)
-        self.app.BW_class_name = MethodType(BW_class_name, self.app)
-        self.app.BW_ping = MethodType(BW_ping, self.app)
+        self.app.func_json = self.func_json
 
     def _init_server(self, port):
         """
