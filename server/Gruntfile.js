@@ -32,14 +32,21 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-nodemon');
 
     grunt.registerTask('prepare', function() {
-        child_process.spawn('mkdir', ['./data']);
+        var child = child_process.spawn('mkdir', ['./data']);
+
+        setTimeout(function() {
+        }, 500);
+
+        this.async();
     });
 
     grunt.registerTask('clean', function() {
         child_process.spawn('rm', ['-rf', ['./data']]);
 
-        // prepare the space again
-        grunt.task.run(['prepare']);
+        setTimeout(function() {
+            // prepare the space again
+            grunt.task.run(['prepare']);
+        }, 500);
     });
 
     grunt.registerTask('run', function() {
