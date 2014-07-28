@@ -31,7 +31,17 @@ module.exports = function(grunt) {
     });
     grunt.loadNpmTasks('grunt-nodemon');
 
+    grunt.registerTask('clean', function() {
+        try {
+            fs.rmdirSync('./data');
+        } catch(err) {
+        }
+        fs.mkdirSync('./data');
+    });
+
     grunt.registerTask('run', function() {
+        grunt.task.run(['clean']);
+
         // start up the server
         var Server = require('./app');
         grunt.task.run(['keepalive']);
@@ -50,7 +60,7 @@ module.exports = function(grunt) {
             PythonControl.app = "my_app.py";
         }
 
-        grunt.task.run(['nodemon']);
+        grunt.task.run(['clean', 'nodemon']);
     });
 };
 
