@@ -9,6 +9,8 @@ function BeamServer() {
 }
 
 BeamServer.prototype.connect = function(name, url) {
+    var self = this;
+
     // get rid of naming conflicts
     if (this.clients[name] !== undefined) {
         throw new ex.NameConflictError();
@@ -17,6 +19,12 @@ BeamServer.prototype.connect = function(name, url) {
     }
 
     var client = new BeamClient(url);
+
+    // on disconnect, delete from the list of clients
+    client.on('disconnect', function() {
+        console.log('recieved a disconnect signal!');
+        delete self.clients[name];
+    });
 
     // save away the clients variable
     this.clients[name] = client;

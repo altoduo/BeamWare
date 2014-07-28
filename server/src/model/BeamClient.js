@@ -1,47 +1,50 @@
 var zerorpc = require('zerorpc-plus');
 var Promise = require('bluebird');
 var _ = require('underscore');
-var vm = require('vm');
+var EventEmitter = require('events').EventEmitter;
 
 var ex = require('../exceptions');
+var ControlNames = require('../names');
 
+_.extend(BeamClient.prototype, EventEmitter.prototype);
 function BeamClient(url) {
     var self = this;
 
     console.log('Creating a new BeamClient with url: ' + url);
 
-    this.functions = {'BW_functions': {args: []}};
+    this.functions = {};
+    this.functions[ControlNames.listFunctions] = {args: []};
     this.connected = true;
 
     // connect the server - use heartbeat interval of 250ms
-    this.client = new zerorpc.Client({heartBeatInterval: 250});
+    this.client = new zerorpc.Client({heartbeatInterval: 250});
     this.client.connect(url);
     this.client = Promise.promisifyAll(this.client);
 
-    // default interval is 30 seconds
-    this.heartbeatInterval = 30*1000;
+    // default interval is 10 seconds
+    this.heartbeatInterval = 10*1000;
 
     // enable when client side has this supported
     function heartbeatLoop() {
-        try {
-            self.call('_heartbeat');
-        } catch(err) {
-            console.log('client heartbeat error');
-            console.log(err);
-            return;
-        }
-
         return Promise
-                .delay(self.heartbeatInterval)
-                .then(heartbeatLoop);
+            .delay(self.heartbeatInterval)
+            .then(function() {
+                return self.call(ControlNames.heartbeat);
+            })
+            .catch(function(err) {
+                // disconnect on any error received
+                self.disconnect();
+            })
+            .then(heartbeatLoop);
     }
-    //heartbeatLoop();
+    heartbeatLoop();
 
     // attempt handshake after a couple of seconds
+    // XXX this is a race condition and needs to be fixed
     Promise.delay(5000)
         .then(function() {
             console.log('getting list of functions...');
-            self.call('BW_functions', [])
+            self.call(ControlNames.listFunctions, [])
             .then(function(result) {
                 console.log('Got list of functions...');
                 self.functions = JSON.parse(result);
@@ -74,6 +77,10 @@ BeamClient.prototype.call = function(methodName, args) {
             return res[0];
         })
         .catch(function(e) {
+            if (methodName === ControlNames.heartbeat) {
+                throw e;
+            }
+
             console.log('there was an error');
             console.log(e);
 
@@ -83,8 +90,12 @@ BeamClient.prototype.call = function(methodName, args) {
 };
 
 BeamClient.prototype.disconnect = function() {
+    console.log('disconnecting');
+
     this.client = null;
     this.connected = false;
+
+    this.emit('disconnect');
 };
 
 module.exports = BeamClient;

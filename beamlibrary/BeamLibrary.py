@@ -46,6 +46,9 @@ class BeamLib(object):
 
     def _init_app_meta_functions(self):
         self.app.BW_refresh = MethodType(BW_refresh, self.app)
+        self.app.BW_ping = MethodType(BW_ping, self.app)
+        self.app.BW_class_name = MethodType(BW_class_name, self.app)
+        self.app.BW_functions = MethodType(BW_functions, self.app)
 
     def _init_meta_functions(self):
         """
