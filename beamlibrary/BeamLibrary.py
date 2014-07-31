@@ -12,12 +12,13 @@ import socket
 import subprocess
 
 
-from rpc import *
+from rpc import beamware_refresh, beamware_functions, beamware_class_name
 from zerorpcpython import zerorpc
 
 class BeamLib(object):
 
-    def __init__(self, client_app_class, node_server_ip= '127.0.0.1', port = 4242):
+    def __init__(self, client_app_class, node_server_ip= '127.0.0.1',
+                 port = 4242):
         #TODO: Add class checking, throw exception otherwise
         self.port = port
         self.node_server_ip = node_server_ip
@@ -27,6 +28,7 @@ class BeamLib(object):
         self._init_app_meta_functions()
         self._derobe(self.app)
         self.func_json = json.dumps(self.func_json)
+        self._init_meta_functions()
         self._init_server(port)
         self._handshake()
         self._run()
@@ -47,12 +49,13 @@ class BeamLib(object):
         """
         Adds meta functions to the client application
         """
-        self.app._class_name = MethodType(_class_name, self.app)
-        self.app._functions = MethodType(_functions, self.app)
-        self.app._ping = MethodType(_ping, self.app)
-        self.app._refresh = MethodType(_refresh, self.app)
-        self.app.app_name = self.app_name
+        self.app.beamware_refresh = MethodType(beamware_refresh, self.app)
+        self.app.beamware_functions = MethodType(beamware_functions,self.app)
+
+    def _init_meta_functions(self):
         self.app.func_json = self.func_json
+        self.app.app_name = self.app_name
+        self.app.beamware_class_name = MethodType(beamware_class_name, self.app)
 
     def _init_server(self, port):
         """

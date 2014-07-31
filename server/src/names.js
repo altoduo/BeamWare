@@ -1,4 +1,4 @@
 module.exports = {
-    listFunctions: '_functions',
-    heartbeat: '_ping'
+    listFunctions: 'beamware_functions',
+    heartbeat: 'beamware_ping'
 };

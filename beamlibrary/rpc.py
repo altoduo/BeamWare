@@ -2,16 +2,16 @@
 BeamWare RPC Server Functions
 """
 
-def _functions(self):
+def beamware_functions(self):
     return self.func_json
 
-def _class_name(self):
+def beamware_class_name(self):
     return self.app_name
 
-def _ping(self):
+def beamware_ping(self):
     return "pong"
 
-def _refresh(self):
+def beamware_refresh(self):
     self._deregister(self)
     reload(self.app)
     self._init_app_meta_functions(self)
