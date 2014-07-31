@@ -94,8 +94,10 @@ var PythonControl = {
         // spawn the python process
         Promise.delay(2500)
         .then(function() {
+            console.log('Starting up python client application');
+
             // open up a logging file
-            var logStream = fs.createWriteStream('./myapp.log');
+            var logStream = fs.createWriteStream('./data/client.log');
 
             self.pythonProcess = child_process.spawn('python2', ['../SampleApp/' + self.app]);
             self.pythonProcess.stdout.pipe(logStream);
