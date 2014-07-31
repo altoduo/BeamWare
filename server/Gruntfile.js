@@ -41,18 +41,6 @@ module.exports = function(grunt) {
 
     });
 
-    grunt.registerTask('clean', function() {
-        child_process.spawn('rm', ['-rf', ['./data']]);
-        var done = this.async();
-
-        setTimeout(function() {
-            // prepare the space again
-            grunt.task.run(['prepare']);
-            done();
-        }, 500);
-
-    });
-
     grunt.registerTask('run', function() {
         grunt.task.run(['prepare']);
 
