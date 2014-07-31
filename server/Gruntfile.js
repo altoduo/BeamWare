@@ -56,6 +56,17 @@ module.exports = function(grunt) {
     grunt.registerTask('run', function() {
         grunt.task.run(['prepare']);
 
+        var filename = grunt.option('logfile');
+        if (filename) {
+            if (filename === true) {
+                filename = './data/server.log';
+            }
+
+            var logStream = fs.createWriteStream(filename);
+            process.stdout.pipe(logStream);
+            process.stderr.pipe(logStream);
+        }
+
         // start up the server
         var Server = require('./app');
         grunt.task.run(['keepalive']);
